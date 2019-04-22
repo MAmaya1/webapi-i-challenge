@@ -20,6 +20,8 @@ server.get('/api/users', (req, res) => {
         })
 })
 
+// GET by id
+
 server.get('/api/users/:id', (req, res) => {
     const userId = req.params.id;
 
@@ -38,7 +40,7 @@ server.post('/api/users', (req, res) => {
     const newUser = req.body;
 
     if (!req.body.name && !req.body.bio) {
-        res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
+        res.status(400).json({ errorMessage: 'Please provide name and bio for the user.' });
     }
 
     db.insert(newUser)
@@ -46,7 +48,49 @@ server.post('/api/users', (req, res) => {
             res.status(201).json(user)
         })
         .catch(err => {
-            res.status(500).json({ error: err, message: 'There was an error while saving the user to the database.'})
+            res.status(500).json({ error: err, message: 'There was an error while saving the user to the database.' })
+        })
+})
+
+// // PUT
+
+server.put('/api/users/:id', (req, res) => {
+    const userId = req.params.id;
+    const updatedUser = req.body;
+
+    if (!req.body.name && !req.body.bio) {
+        res.status(400).json({errorMessage: 'Please provide name and bio for the user.' });
+    }
+
+    db.findById(userId)
+        .then(user => {
+            if (user) {
+                db.update(userId, updatedUser)
+                    .then(user => {
+                        res.status(201).json(user)
+                    })
+                    .catch(err => {
+                        res.status(500).json({ error: err, message: 'The user information could not be modified.' })
+                    })
+            }
+        })
+})
+
+// DELETE
+
+server.delete('/api/users/:id', (res, req) => {
+    const userId = req.params.id;
+
+    if (userId !== req.body.id) {
+        res.status(404).json({ errorMessage: 'The user with the specified ID does not exist' })
+    }
+
+    db.remove(userId)
+        .then(() => {
+            res.status(200).delete();
+        })
+        .catch(err => {
+            res.status(500).json({ error: err, message: 'The user could not be removed' })
         })
 })
 
