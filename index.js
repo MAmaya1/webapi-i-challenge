@@ -72,6 +72,8 @@ server.put('/api/users/:id', (req, res) => {
                     .catch(err => {
                         res.status(500).json({ error: err, message: 'The user information could not be modified.' })
                     })
+            } else {
+                res.status(404).json({ message: 'The user with the specified ID does not exist.' })
             }
         })
 })
@@ -91,6 +93,8 @@ server.delete('/api/users/:id', (req, res) => {
                     .catch(err => {
                         res.status(500).json({ error: err, message: 'The user could not be removed' })
                     })
+            } else {
+                res.status(404).json({ message: 'The user with the specified ID does not exist.' })
             }
         })
 })
