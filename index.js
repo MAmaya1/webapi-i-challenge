@@ -8,13 +8,25 @@ const server = express();
 
 // Get Request
 
-server.get('/users', (req, res) => {
+server.get('/api/users', (req, res) => {
     db.find()
         .then(users => {
             res.json(users)
         })
         .catch(err => {
             res.status(500).json({ error: err, message: 'The users information could not be retrieved'})
+        })
+})
+
+server.get('/api/users/:id', (req, res) => {
+    const userId = req.params.id;
+
+    db.findById(userId)
+        .then(users => {
+            res.json(users)
+        })
+        .catch(err => {
+            res.status(404).json({ error: err, message: 'The user with the specified ID does not exist.' })
         })
 })
 
